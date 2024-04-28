@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Date</title>
+</head>
+<body>
+    {%include 'navbar.html'%}
+    <h1>Select a Date</h1>
+    <form action="{% url 'exportData' %}" method="GET">
+        <label for="selectedDate">Select Date:</label>
+        <input type="date" id="selectedDate" name="selected_date">
+        <button type="submit">OK</button>
+    </form>
+</body>
+</html>

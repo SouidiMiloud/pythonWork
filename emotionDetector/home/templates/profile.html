@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <title>profile</title>
+        <style>
+            .myDiv{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                color: #ddddff;
+                width: 50%;
+                margin-left: 50%;
+                transform: translateX(-50%);
+                border-radius: 10px;
+                box-shadow: 1px 3px 5px 1px rgb(0.3, 0.3, 0.3);
+                margin-top: 1rem; 
+            }
+            .divInfo{
+                display: flex;
+                flex-direction: column;
+                align-items: left;
+                width: 50%;
+            }
+            .pInfo{
+                color: #333;
+                font-size: 18px;
+                margin-top: 1.5rem;
+            }
+            .pInfoUser{
+                color: black;
+                font-size: 20px;
+                margin-top: 1.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        {%include 'navbar.html'%}
+        <div class="myDiv">
+            <div style="margin-left: 7rem;" class="divInfo">
+                <p class="pInfo">Name:</p>
+                <p class="pInfo">Username</p>
+                <p class="pInfo">Age:</p>
+                <p class="pInfo">Gender</p>
+                <p class="pInfo">Phone-Num</p>
+                <p class="pInfo">Email</p>
+                <p class="pInfo">Address</p>
+            </div>
+            <div class="divInfo">
+                <p class="pInfoUser">{{user.name}}</p>
+                <p class="pInfoUser">{{user.username}}</p>
+                <p class="pInfoUser">{{user.age}}</p>
+                <p class="pInfoUser">{{user.gender}}</p>
+                <p class="pInfoUser">{{user.phone}}</p>
+                <p class="pInfoUser">{{user.email}}</p>
+                <p class="pInfoUser">{{user.address}}</p>
+            </div>
+        </div>
+    </body>
+</html>

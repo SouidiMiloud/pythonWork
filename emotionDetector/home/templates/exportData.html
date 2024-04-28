@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .export{
+            width: 6rem;
+            height: 3rem;
+            background-color: blue;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+        .export:hover{
+            cursor: pointer;
+            transform: scale(1.05)
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Emotion Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div style="display: flex; flex-direction: row;">
+        <div style="width: 80%; margin: 0 auto;">
+            <canvas id="emotionChart" width="800" height="400"></canvas>
+        </div>
+        <button class="export" id="exportButton">export</button>
+    </div>
+
+    <script>
+        var ctx = document.getElementById('emotionChart').getContext('2d');
+        var labels = [];
+        var datasets = [];
+
+        var emotionData = '{{ emotion_data_for_dates_json|escapejs }}';
+        if (emotionData !== '') {
+            var emotion_data_for_dates = JSON.parse(emotionData);
+
+            emotion_data_for_dates.forEach(function(date_data) {
+                for(let i=0; i < 6; i++)
+                    labels.push(date_data.date);
+
+                var emotions = date_data.emotion_data;
+                
+                var dataset = {
+                    label: date_data.date,
+                    data: [
+                        emotions['happy'],
+                        emotions['sad'],
+                        emotions['angry'],
+                        emotions['surprise'],
+                        emotions['neutral'],
+                        emotions['fear']
+                    ],
+                    backgroundColor: [
+                        'rgba(200, 200, 0, 1)',  
+                        'rgba(50, 50, 150, 1)',  
+                        'rgba(255, 190, 200, 1)',  
+                        'rgba(0, 255, 0, 1)',  
+                        'rgba(50, 150, 50, 1)', 
+                        'rgba(0,0, 255, 1)'   
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                };
+                datasets.push(dataset);
+            });
+        }
+        let chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                title: {
+                    text: "Emotions",
+                    display: true
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {beginAtZero: true}
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+
+                        labels: {
+                            generateLabels: function(chart) {
+                                var data = chart.data;
+                                var legendLabels = [];
+
+                                if (data.datasets.length) {
+                                    data.datasets.forEach(function(dataset, datasetIndex) {
+                                        var emotions = ['Happy', 'Sad', 'Angry', 'Surprise', 'Neutral', 'Fear']; // Assuming these are your emotion names
+
+                                        dataset.data.forEach(function(value, index) {
+                                            var label = emotions[index];
+                                            var backgroundColor = dataset.backgroundColor[index];
+
+                                            legendLabels.push({
+                                                text: label,
+                                                fillStyle: backgroundColor
+                                            });
+                                        });
+                                    });
+                                }
+
+                                return legendLabels;
+                            },
+                            boxWidth: 10, 
+                            boxHeight: 10, 
+                            usePointStyle: true,
+                            padding: 40
+                        }
+                    }
+                }
+            }
+        });
+        document.getElementById('exportButton').addEventListener('click', function() {
+            const chartCanvas = document.getElementById('emotionChart');
+            html2pdf().from(chartCanvas).save();
+        });
+    </script>
+</body>
+</html>

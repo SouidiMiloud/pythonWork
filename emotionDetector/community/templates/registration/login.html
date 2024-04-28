@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <title>login</title>
+        <style>
+            .field{
+                width: 20rem;
+                height: 3rem;
+                border-radius: 10px;
+                margin-top: 2rem;
+            }
+            .container{
+                margin-top: 5rem;
+                width: 40%;
+                margin-left: 50%;
+                transform: translateX(-50%);
+                height: 60%;
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                box-shadow: 1px 2px 5px 1px rgb(0.3, 0.3, 0.3);
+            }
+            .submit{
+                width: 8rem;
+                height: 3rem;
+                font-size: 20px;
+                background-color: blue;
+                color: white;
+                margin-top: 3rem;
+                border: none;
+                border-radius: 10px;
+            }
+            .submit:hover{
+                cursor: pointer;
+                transform: scaleX(1.05);
+                transform: scaleY(1.05);
+            }
+        </style>
+    </head>
+
+    <body>
+        <form action="" method=POST>
+            {% csrf_token %}
+            
+            <div class="container">
+                <h3 style="color: green;">please sign in</h3>
+                <input type="text" class="field" name="username" placeholder="username">
+                <input type="password" class="field" name="password" placeholder="password">
+            
+                <button class="submit" type="submit">log in</button>
+            </div>
+        </form>
+    </body>
+</html>
