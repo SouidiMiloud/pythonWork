@@ -77,13 +77,19 @@
                 {% endfor %}
             </select><br>
             <input class="myInput" type="tel" id="phone" name="phone" placeholder="Phone Number" value="{{ user.phone }}" required><br>
-            <input class="myInput" type="email" id="email" name="email" placeholder="Email" value="{{ user.email }}" required><br>
+            
+            {% if action and action == 'edit' %}
+                <input class="myInput" type="email" id="email" name="email" placeholder="Email" value="{{ user.email }}" readonly><br>
+            {%else%}
+                <input class="myInput" type="email" id="email" name="email" placeholder="Email" value="{{ user.email }}" required><br>
+            {%endif%}
+
             <input class="myInput" type="password" id="password" name="password" placeholder="password" value="{{ user.password }}" required><br>
             <input class="myInput" type="text" id="address" name="address" placeholder="Address" value="{{ user.address }}" required><br>
             <input type="hidden" name="role" id="role" value="M">
             <input type="hidden" id="id" name="id" value="{{ id }}">
             {% if action and action == 'edit' %}
-                <button class="saveButton" type="button" onclick="setRole('A')">Edit</button>
+                <button class="saveButton" type="submit">Edit</button>
             {% elif admins == 0 %}
                 <button class="saveButton" type="button" onclick="setRole('A')">Save Admin</button>
             {% elif admins == max_admins %}

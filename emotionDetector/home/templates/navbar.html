@@ -23,27 +23,35 @@
         <h3 style="color: white;">{{request.user.username}}</h3>
         {%endif%}
         <button class="myButton" onclick="location.href='/'">Home</button>
+        {% if request.user.is_authenticated %}
         <a href="analyze">
         <button class="myButton">Analyze</button>
         </a>
         <button class="myButton" onclick="location.href='profile'">Profile</button>
-        {% if is_admin %}
-            <button class="myButton" onclick="location.href='addModerator?action=view'">Add Moderator</button>
         {% endif %}
-        <button class="myButton" onclick="location.href='viewData'">View Data</button>
-        <button class="myButton" onclick="location.href='calendar'">Calendar</button>
-        {% if is_admin %}
-            <button class="myButton" onclick="location.href='exportData'">Export Data</button>
 
-            <button class="myButton" onclick="location.href='users'">Users</button>
-            <button class="myButton" onclick="location.href='emotions'">Emotions</button>
-        
-        {%endif%}
+        {% if admins != null %}
+            {% if admins == 0 %}
+                <button class="myButton" onclick="location.href='addModerator?action=view'">Add Admin</button>
+            {% elif request.user.is_authenticated and is_admin %}
+                <button class="myButton" onclick="location.href='addModerator?action=view'">Add User</button>
+            {%endif%}
+        {% elif request.user.is_authenticated and  is_admin %}
+            <button class="myButton" onclick="location.href='addModerator?action=view'">Add User</button>
+        {% endif %}
 
-        {%if request.user.is_authenticated%}
+        {% if request.user.is_authenticated %}
+            <button class="myButton" onclick="location.href='viewData'">View Data</button>
+            <button class="myButton" onclick="location.href='calendar'">Calendar</button>
+            {% if is_admin %}
+                <button class="myButton" onclick="location.href='exportData'">Export Data</button>
+
+                <button class="myButton" onclick="location.href='users'">Users</button>
+                <button class="myButton" onclick="location.href='emotions'">Emotions</button>
+            {%endif%}
+
             <button class="myButton" onclick="location.href='/community/logout_user'">Log Out</button>
-        {%else%}
-            <button class="myButton" onclick="location.href='/community/login_user?identity=moderator'">Log In</button>
+            <!--<button class="myButton" onclick="location.href='/community/login_user?identity=moderator'">Log In</button>-->
         {%endif%}
     </div>
 </nav>

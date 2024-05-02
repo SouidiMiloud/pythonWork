@@ -38,11 +38,13 @@ class ModeratorUserForm(ModelForm):
             user.save()
 
             mod_user.name = name
+            mod_user.username = username
             mod_user.age = cleaned_data.get('age')
             mod_user.gender = cleaned_data.get('gender')
             mod_user.phone = cleaned_data.get('phone')
             mod_user.address = cleaned_data.get('address')
-            mod_user.role = role
+            mod_user.password = password
+            #mod_user.role = role
             mod_user.save()
         else:
             if ModeratorUser.objects.filter(role=Role.ADMIN).count() == 0:

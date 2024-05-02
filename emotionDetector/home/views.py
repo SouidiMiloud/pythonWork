@@ -24,7 +24,8 @@ def is_admin(request):
 
 def home(request):
     valid = is_admin(request) or not request.user.is_authenticated
-    return render(request, 'home.html', {'is_admin': valid})
+    admins = ModeratorUser.objects.filter(role=Role.ADMIN).count()
+    return render(request, 'home.html', {'is_admin': valid, 'admins': admins})
 
 @login_required
 def analyze(request):
