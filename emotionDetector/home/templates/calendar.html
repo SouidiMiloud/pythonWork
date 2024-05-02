@@ -1,16 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        body {
+            background-image: url("../../emotionDetector/images/back.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            }
+        .clDiv{
+            border-radius: 5px;
+            margin: 5rem 2rem 2rem 2rem;
+            background-color: rgba(50, 100, 100, 0.25);
+            width: 40%;
+            height: 30%;
+            display: flex;
+            flex-direction: column;
+            margin-left: 25%;
+            transform: translateX(-25%);
+        }
+        .clInput{
+            width: 300px; 
+            height: 50px;
+            font-size: 1.2rem; 
+            margin-bottom: 20px; 
+            margin-left: 1rem;
+            border-radius: 8px; 
+            border: 2px solid #ccc; 
+            padding: 10px; 
+            box-sizing: border-box; 
+        }
+        .clBtn{
+            width: 6rem;
+            height: 3rem;
+            background-color: rgba(50, 100, 100, 0.25);
+            border: solid;
+            border-width: 1.5px;
+            border-color: white;
+            border-radius: 5px;
+            font-size: 20px;
+            color: white;
+            margin-left: 2rem;
+        }
+        .clBtn:hover{
+            color: black;
+            background-color: white;
+            cursor: pointer;
+            transform: scale(1.1)
+        }
+    </style>
     <meta charset="UTF-8">
     <title>Select Date</title>
 </head>
 <body>
     {%include 'navbar.html'%}
-    <h1>Select a Date</h1>
-    <form action="{% url 'exportData' %}" method="GET">
-        <label for="selectedDate">Select Date:</label>
-        <input type="date" id="selectedDate" name="selected_date">
-        <button type="submit">OK</button>
-    </form>
+    <div class="clDiv">
+    <h2 style="color: white;">Select a Date</h2>
+        <form action="{% url 'exportData' %}" method="GET">
+            <input class="clInput" type="date" id="selectedDate" name="selected_date">
+            <button class="clBtn" type="submit">OK</button>
+        </form>
+    </div>
+
 </body>
 </html>

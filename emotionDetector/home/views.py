@@ -2,16 +2,33 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .camera import camera
 from .forms import ModeratorUserForm
-from .models import ModeratorUser
+from .models import ModeratorUser, Role
 from .models import EmotionData
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required, user_passes_test
 import json
 from datetime import datetime
 
 
-@login_required
+MAX_ADMINS = 1
+
+
+def is_admin(request):
+    user = request.user
+    is_admin_ = False
+    if user.is_authenticated:
+        moderator_user = ModeratorUser.objects.filter(email=user.email).first()
+        if moderator_user and moderator_user.role == Role.ADMIN:
+            is_admin_ = True
+    return is_admin_
+
 def home(request):
-    return render(request, 'home.html', {})
+    valid = is_admin(request) or not request.user.is_authenticated
+    return render(request, 'home.html', {'is_admin': valid})
+
+@login_required
+def analyze(request):
+    return render(request, 'analyze.html', {'is_admin': is_admin(request)})
 
 @login_required
 def video_feed(request):
@@ -42,18 +59,46 @@ def profile(request):
         user = ModeratorUser.objects.get(email=email)
     except:
         pass
-    return render(request, 'profile.html', {'user': user})
+    return render(request, 'profile.html', {'user': user, 'is_admin': is_admin(request), 'id': user.id})
 
-@login_required
+def allow_if_no_admins(user):
+    no_admin_users = not ModeratorUser.objects.filter(role=Role.ADMIN).exists()
+    is_authenticated = user.is_authenticated
+    return no_admin_users or is_authenticated
+
+def allow_if_admin_only(user):
+    if not user.is_authenticated:
+        return True
+    is_admin = ModeratorUser.objects.filter(email=user.email, role=Role.ADMIN).exists()
+    return is_admin
+
+@user_passes_test(allow_if_no_admins)
+@user_passes_test(allow_if_admin_only)
 def addModerator(request):
+    admins = ModeratorUser.objects.filter(role=Role.ADMIN).count()
+    form = ModeratorUserForm()
+    user = None
     if request.method == 'POST':
         form = ModeratorUserForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('/')
     else:
-        form = ModeratorUserForm()
-    return render(request, 'addModerator.html', {'form': form})
+        action = request.GET.get('action')
+        if not action or action not in ['view', 'edit']:
+            return redirect('/')
+        if admins == 0:
+            return render(request, 'addModerator.html', {'form': form, 'admins': admins, 'max_admins': MAX_ADMINS, 'is_admin': is_admin(request)})
+        email = request.user.email
+        if action == 'edit':
+            email = request.GET.get('email')
+            try:
+                user = ModeratorUser.objects.get(email=email)
+            except User.DoesNotExist:
+                return redirect('/')  
+            form = ModeratorUserForm(instance=user)
+    return render(request, 'addModerator.html', {'form': form, 'users': admins, 'max_admins': MAX_ADMINS, 'is_admin': is_admin(request), 'action': action, 'user': user})
+
 
 @login_required
 def viewData(request):
@@ -77,13 +122,13 @@ def viewData(request):
         emotion_data_for_dates.append(emotion_data_dict)
 
     emotion_data_json_str = json.dumps(emotion_data_for_dates)
-    return render(request, 'viewEmotionData.html', {'emotion_data_for_dates_json': emotion_data_json_str})
+    return render(request, 'viewEmotionData.html', {'emotion_data_for_dates_json': emotion_data_json_str, 'is_admin': is_admin(request)})
 
 @login_required
 def calendar(request):
-    return render(request, 'calendar.html', {})
+    return render(request, 'calendar.html', {'is_admin': is_admin(request)})
 
-@login_required
+@user_passes_test(allow_if_admin_only)
 def exportData(request):
     selected_date_str = request.GET.get('selected_date')
     if not selected_date_str:
@@ -105,4 +150,33 @@ def exportData(request):
 
     emotion_data_json_str = json.dumps(emotion_data_for_dates)
 
-    return render(request, 'exportData.html', {'selected_date': selected_date, 'emotion_data_for_dates_json': emotion_data_json_str})
+    return render(request, 'exportData.html', {'selected_date': selected_date, 'emotion_data_for_dates_json': emotion_data_json_str, 'is_admin': is_admin(request)})
+
+@user_passes_test(allow_if_admin_only)
+def show_users(request):
+    users = ModeratorUser.objects.all()
+    return render(request, 'users.html', {'is_admin': is_admin(request), 'users': users})
+
+@user_passes_test(allow_if_admin_only)
+def show_emotions(request):
+    emotions = EmotionData.objects.all()
+    return render(request, 'emotions.html', {'is_admin': is_admin(request), 'emotions': emotions})
+
+@user_passes_test(allow_if_admin_only)
+def processed_users(request):
+    date_ = request.GET.get('date')
+    date = datetime.strptime(date_, '%B %d, %Y').strftime('%Y-%m-%d')
+    emails = []
+    try:
+        emotionsList = EmotionData.objects.filter(date=date)
+        emails_str = emotionsList[0].processed_users
+        emails = emails_str.split(',')
+    except:
+        pass
+    users = []
+    for email in emails:
+        try:
+            users.append(ModeratorUser.objects.get(email=email))
+        except:
+            pass
+    return render(request, 'processed_users.html', {'is_admin': is_admin(request), 'users': users})

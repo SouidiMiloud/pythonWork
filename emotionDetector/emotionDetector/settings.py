@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     #my apps
     'home',
     'community',
-    'channels',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +63,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request',  # Make sure this is included
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -117,7 +116,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-LOGIN_REDIRECT_URL = '/home/' 
+LOGIN_REDIRECT_URL = '/' 
 LOGIN_URL = '/community/login_user'
 
 

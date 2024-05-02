@@ -23,8 +23,8 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('community/login_user', auth_views.LoginView.as_view(), name="login"),
-    path('home/', include('home.urls'), name='home'),
+    path('community/login_user/', auth_views.LoginView.as_view(), name="login"),
+    path('', include('home.urls'), name='/'),
     path('community/', include('django.contrib.auth.urls')),
     path('community/', include('community.urls')),
 ]

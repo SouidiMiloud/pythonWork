@@ -2,17 +2,35 @@
 <html lang="en">
 <head>
     <style>
-        .export{
-            width: 6rem;
-            height: 3rem;
-            background-color: blue;
-            border: none;
+        body {
+            background-image: url("../../emotionDetector/images/back.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            }
+        .myDiv{
+            margin: 3rem 5rem;
+            width: 50%;
+            height: 70%;
             border-radius: 10px;
-            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 4px 2px 5px 2px rgba(100, 100, 200, 100);
+        }
+        .export{
+            background-color: #225;
+            width: 7.5rem;
+            height: 3rem;
+            color: white;
+            font-size: 20px;
+            border: 1.5px solid #225;
+            border-radius: 5px;
+            position: absolute;
+            top: 3rem;
+            right: 0;
         }
         .export:hover{
             cursor: pointer;
-            transform: scale(1.05)
+            color: black;
+            background-color: white;
         }
     </style>
     <meta charset="UTF-8">
@@ -23,12 +41,13 @@
 <body>
     {% include 'navbar.html' %}
 
-    <div style="display: flex; flex-direction: row;">
-        <div style="width: 80%; margin: 0 auto;">
+    <div class="myDiv">
+        <div style="display: flex; flex-direction: row;">
             <canvas id="emotionChart" width="800" height="400"></canvas>
         </div>
-        <button class="export" id="exportButton">export</button>
     </div>
+    <button class="export" id="exportButton">export</button>
+    
 
     <script>
         var ctx = document.getElementById('emotionChart').getContext('2d');
@@ -83,15 +102,25 @@
                 datasets: datasets
             },
             options: {
+                aspectRatio: 0, 
+                animation: false,
                 title: {
                     text: "Emotions",
-                    display: true
+                    display: true,
                 },
                 scales: {
                     x: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'black' 
+                        }
                     },
-                    y: {beginAtZero: true}
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'black' 
+                        }
+                    }
                 },
                 plugins: {
                     legend: {
@@ -105,7 +134,7 @@
 
                                 if (data.datasets.length) {
                                     data.datasets.forEach(function(dataset, datasetIndex) {
-                                        var emotions = ['Happy', 'Sad', 'Angry', 'Surprise', 'Neutral', 'Fear']; // Assuming these are your emotion names
+                                        var emotions = ['Happy', 'Sad', 'Angry', 'Surprise', 'Neutral', 'Fear'];
 
                                         dataset.data.forEach(function(value, index) {
                                             var label = emotions[index];
@@ -113,18 +142,18 @@
 
                                             legendLabels.push({
                                                 text: label,
-                                                fillStyle: backgroundColor
+                                                fillStyle: backgroundColor,
                                             });
                                         });
                                     });
                                 }
-
+                                legendLabels.splice(6);
                                 return legendLabels;
                             },
                             boxWidth: 10, 
                             boxHeight: 10, 
                             usePointStyle: true,
-                            padding: 40
+                            padding: 40,
                         }
                     }
                 }

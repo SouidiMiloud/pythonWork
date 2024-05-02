@@ -1,39 +1,49 @@
-
 <style>
     .myButton{
         height: 2.5rem;
-        background-color: #225; 
+        background-color: #233; 
         color: white;
         font-size: 20px; 
         border: none; 
         border-radius: 10px; 
-        margin-top: 5px;
+        margin-top: 0.4rem;
     }
     .myButton:hover{
         background-color: white;
-        color: #225;
+        color: #233;
         cursor: pointer;
         transform: scaleX(1.05);
         transform: scaleY(1.05);
     }
 </style>
 
-<nav style="background-color: #225;">
-    <div style="display: flex; justify-content: space-around;">
+<nav style="background-color: #233;">
+    <div style="display: flex; justify-content: space-around; height: 3.3rem;">
         {%if request.user.is_authenticated%}
         <h3 style="color: white;">{{request.user.username}}</h3>
         {%endif%}
-        <button class="myButton" onclick="location.href='/home'">home</button>
-        <button class="myButton" onclick="location.href='profile'">profile</button>
-        <button class="myButton" onclick="location.href='addModerator'">Add Moderator</button>
-        <button class="myButton" onclick="location.href='viewData'">View Emotion Data</button>
+        <button class="myButton" onclick="location.href='/'">Home</button>
+        <a href="analyze">
+        <button class="myButton">Analyze</button>
+        </a>
+        <button class="myButton" onclick="location.href='profile'">Profile</button>
+        {% if is_admin %}
+            <button class="myButton" onclick="location.href='addModerator?action=view'">Add Moderator</button>
+        {% endif %}
+        <button class="myButton" onclick="location.href='viewData'">View Data</button>
         <button class="myButton" onclick="location.href='calendar'">Calendar</button>
-        <button class="myButton" onclick="location.href='exportData'">Export Data</button>
+        {% if is_admin %}
+            <button class="myButton" onclick="location.href='exportData'">Export Data</button>
+
+            <button class="myButton" onclick="location.href='users'">Users</button>
+            <button class="myButton" onclick="location.href='emotions'">Emotions</button>
+        
+        {%endif%}
 
         {%if request.user.is_authenticated%}
             <button class="myButton" onclick="location.href='/community/logout_user'">Log Out</button>
         {%else%}
-            <button class="myButton" onclick="location.href='/community/login_user'">Log In</button>
+            <button class="myButton" onclick="location.href='/community/login_user?identity=moderator'">Log In</button>
         {%endif%}
     </div>
 </nav>

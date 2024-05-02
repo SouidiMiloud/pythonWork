@@ -6,6 +6,9 @@ class Gender(models.TextChoices):
     MALE = 'M', _('Male')
     FEMALE = 'F', _('Female')
 
+class Role(models.TextChoices):
+    MODERATOR = 'M', _('Moderator')
+    ADMIN = 'A', _('Admin')
 
 class ModeratorUser(models.Model):
     name = models.CharField(max_length=200)
@@ -16,6 +19,7 @@ class ModeratorUser(models.Model):
     email = models.EmailField()
     password = models.CharField(max_length=200)
     address = models.TextField()
+    role = models.CharField(max_length=1, choices=Role.choices, default=Role.MODERATOR)
 
 
 class EmotionData(models.Model):

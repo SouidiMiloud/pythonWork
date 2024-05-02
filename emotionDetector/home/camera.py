@@ -34,7 +34,8 @@ class VideoCamera(object):
     def get_frame(self):
         with self.lock:
             if self.frame is not None:
-                ret, jpeg = cv2.imencode('.jpg', self.frame)
+                rgb_frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+                ret, jpeg = cv2.imencode('.jpg', rgb_frame)
                 if ret:
                     return base64.b64encode(jpeg.tobytes()).decode('utf-8')
         return None
@@ -43,6 +44,7 @@ class VideoCamera(object):
         while True:
             ret, frame = self.video.read()
             if ret:
+                frame = cv2.flip(frame, 1)
                 if not frame.size == 0:
                     with self.lock:
                         self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

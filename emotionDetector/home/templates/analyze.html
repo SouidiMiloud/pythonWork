@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-image: url("../../emotionDetector/images/back.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            }
+        .chartDiv{
+            background-color: rgba(255, 255, 255, 0.8);
+            margin-left: 5rem;
+            width: 30rem;
+            border-radius: 10px;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>analyze</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0-alpha.3/dist/chartjs-plugin-datalabels.min.js"></script>
+
+
+    <style>
+        .percent{
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div style="display: flex; flex-direction: row; justify-content: space-between; width: 70%; margin-left: 50%; transform: translateX(-50%); margin-top: 2rem;">
+        <img style="width: 30rem; height: 25rem;" id="liveImage" src="" alt="">
+        
+        <div class="chartDiv">
+            <canvas id="chart" width="300" height="220"></canvas>
+        </div>
+
+        <!--<div style="display: flex; flex-direction: column; margin-top: 0.5rem; width: 3rem;">
+            <p class="percent" id="happy"></p>
+            <p class="percent" id="anger"></p>
+            <p style="margin-top: 1rem;" id="surprise"></p>
+            <p style="margin-top: 1rem;" id="nature"></p>
+            <p style="margin-top: 1rem;" id="fear"></p>
+            <p style="margin-top: 1rem;" id="sad"></p>
+        </div>-->
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            var interval = setInterval(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "ws/video/",
+                    success: function(data) {
+                        $("#liveImage").attr("src", "data:image/jpeg;base64," + data.image);
+                        
+                        if (data.happy !== undefined) {
+                            $("#happy").text("  " + data.happy + ' %');
+                            updateChartData("Happy", data.happy);
+                        } else {
+                            $("#happy").text("Happy: N/A");
+                        }
+                        if (data.anger !== undefined) {
+                            $("#anger").text("  " + data.anger + ' %');
+                            updateChartData("Anger", data.anger);
+                        } else {
+                            $("#anger").text("Anger: N/A");
+                        }
+                        if (data.surprise !== undefined) {
+                            $("#surprise").text("  " + data.surprise + ' %');
+                            updateChartData("Surprise", data.surprise);
+                        } else {
+                            $("#surprise").text("Surprise: N/A");
+                        }
+                        if (data.nature !== undefined) {
+                            $("#nature").text("  " + data.nature + ' %');
+                            updateChartData("Nature", data.nature);
+                        } else {
+                            $("#nature").text("Nature: N/A");
+                        }
+                        if (data.fear !== undefined) {
+                            $("#fear").text("  " + data.fear + ' %');
+                            updateChartData("Fear", data.fear);
+                        } else {
+                            $("#fear").text("Fear: N/A");
+                        }
+                        if (data.sad !== undefined) {
+                            $("#sad").text("  " + data.sad + ' %');
+                            updateChartData("Sad", data.sad);
+                        } else {
+                            $("#sad").text("Sad: N/A");
+                        }
+                        chart.update(); 
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Failed to fetch data:", error);
+                    }
+                });
+            }, 10);
+        });
+
+        function updateChartData(emotion, value) {
+            let index = chart.data.labels.indexOf(emotion);
+            if (index !== -1) {
+                chart.data.datasets[0].data[index] = value;
+            }
+        }
+        
+        let ctx = document.getElementById("chart").getContext("2d");
+
+        let chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Happy", "Anger", "Surprise", "Nature", "Fear", "Sad"],
+                datasets: [
+                    {
+                        label: "Emotions",
+                        backgroundColor: ["#ff6384", "#36a2eb", "#cc65fe", "#ffce56", "#ff8e79", "#61baff"],
+                        borderColor: "#fff",
+                        borderWidth: 0,
+                        data: [0, 0, 0, 0, 0, 0] 
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                title: {
+                    text: "Emotions",
+                    display: true
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'black' 
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'black' 
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                }
+            }
+        });
+    </script>
+</body>
+</html>

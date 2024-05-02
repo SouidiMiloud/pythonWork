@@ -2,35 +2,62 @@
     <head>
         <title>login</title>
         <style>
+            body {
+            background-image: url("../../emotionDetector/images/back.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            }
             .field{
                 width: 20rem;
                 height: 3rem;
-                border-radius: 10px;
+                border-radius: 5px;
+                border-width: 1.5px;
                 margin-top: 2rem;
             }
             .container{
+                background-color: rgba(50, 100, 100, 0.5);
                 margin-top: 5rem;
-                width: 40%;
-                margin-left: 50%;
-                transform: translateX(-50%);
+                width: 35%;
+                margin-left: 25%;
+                transform: translateX(-25%);
                 height: 60%;
-                border-radius: 10px;
+                border-radius: 5px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                box-shadow: 1px 2px 5px 1px rgb(0.3, 0.3, 0.3);
+                box-shadow: 1px 1px 5px rgb(0.3, 0.3, 0.3);
+            }
+            .div1{
+                width: 100%;
+                height: 15%;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                background-color: #255;
+                color: white;
+                font-size: 22px;
+                text-align: center;
+            }
+            .div1 p{
+                margin-top: 2%;
+            }
+            .div2{
+                display: flex;
+                flex-direction: column;
             }
             .submit{
                 width: 8rem;
                 height: 3rem;
                 font-size: 20px;
-                background-color: blue;
-                color: white;
+                background-color: #dff;
+                color: black;
                 margin-top: 3rem;
-                border: none;
-                border-radius: 10px;
+                border-width: 1.5px;
+                border-color: #dff;
+                border-radius: 5px;
             }
             .submit:hover{
+                background-color: #266;
+                color: white;
                 cursor: pointer;
                 transform: scaleX(1.05);
                 transform: scaleY(1.05);
@@ -39,14 +66,19 @@
     </head>
 
     <body>
+        {% include 'navbar.html' %}
         <form action="" method=POST>
             {% csrf_token %}
             
             <div class="container">
-                <h3 style="color: green;">please sign in</h3>
-                <input type="text" class="field" name="username" placeholder="username">
-                <input type="password" class="field" name="password" placeholder="password">
-            
+                <div class="div1">
+                    <p>please sign in</p>
+                </div>
+                <div class="div2">
+                    <input type="text" class="field" name="username" placeholder="username">
+                    <input type="password" class="field" name="password" placeholder="password">
+                    <input type="hidden" class="field" name="identity" value="{{ identity }}">
+                </div>
                 <button class="submit" type="submit">log in</button>
             </div>
         </form>

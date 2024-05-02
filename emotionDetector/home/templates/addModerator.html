@@ -2,35 +2,45 @@
     <head>
         <title>new moderator</title>
         <style>
+            body {
+            background-image: url("../../emotionDetector/images/back.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            }
             .formTitle{
-                color: green;
+                color: white;
             }
             .myInput{
+                padding-left: 1rem;
                 width: 20rem;
                 height: 2.5rem;
                 border-radius: 10px;
-                border-color: #225;
+                border-color: #266;
+                border-width: 1.5px;
                 margin: -0.5rem;
             }
             .formBg{
+                background-color: rgba(50, 100, 100, 0.5);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 color: #ddddff;
-                width: 60%;
-                margin-left: 50%;
-                transform: translateX(-50%);
-                border-radius: 10px;
-                box-shadow: 1px 2px 5px 1px rgb(0.3, 0.3, 0.3);
-                margin-top: 1rem; 
+                width: 45%;
+                margin-left: 15%;
+                margin-top: 3rem;
+                transform: translateX(-15%);
+                border-radius: 5px;
+                box-shadow: 1px 1px 5px rgb(0.3, 0.3, 0.3); 
             }
             .saveButton{
-                background-color: #225;
-                color: white;
+                background-color: white;
+                color: #244;
                 width: 7rem;
-                height: 2.5rem;
-                border: none;
-                border-radius: 10px;
+                height: 3rem;
+                border: solid;
+                border-width: 1.5px;
+                border-color: #266;
+                border-radius: 5px;
                 font-size: 18px;
                 margin-bottom: 0.5rem;
             }
@@ -38,6 +48,8 @@
                 transform: scaleX(1.05);
                 transform: scale(1.05);
                 cursor: pointer;
+                background-color: #266;
+                color: white;
             }
         </style>
     </head>
@@ -46,23 +58,51 @@
 
         <form action="addModerator" method="post" class="formBg">
             {% csrf_token %}
-            <h2 class="formTitle">Add New Moderator</h2>
-            <input class="myInput" type="text" id="name" name="name" placeholder="Full Name" required><br>
-            <input class="myInput" type="text" id="username" name="username" placeholder="Username" required><br>
-            <input class="myInput" type="number" id="age" name="age" placeholder="Age" required><br>
-
+            {% if action and action == 'edit' %}
+                <h2 class="formTitle">Edit your profile</h2>
+            {% else %}
+                <h2 class="formTitle">Add New Moderator</h2>
+            {%endif%}
+            <input class="myInput" type="text" id="name" name="name" placeholder="Full Name" value="{{ user.name }}" required><br>
+            <input class="myInput" type="text" id="username" name="username" placeholder="Username" value="{{ user.username }}" required><br>
+            <input class="myInput" type="number" id="age" name="age" placeholder="Age" value="{{ user.age }}" required><br>
             <select class="myInput" id="gender" name="gender" required>
                 <option value="" disabled selected>Choose Gender</option>
                 {% for choice in form.gender.field.choices %}
-                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                    {% if user and user.gender == choice.0 %}
+                        <option value="{{ choice.0 }}" selected>{{ choice.1 }}</option>
+                    {% else %}
+                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                    {% endif %}
                 {% endfor %}
             </select><br>
-
-            <input class="myInput" type="tel" id="phone" name="phone" placeholder="Phone Number" required><br>
-            <input class="myInput" type="email" id="email" name="email" placeholder="Email" required><br>
-            <input class="myInput" type="password" id="password" name="password" placeholder="password" required><br>
-            <input class="myInput" type="text" id="address" name="address" placeholder="Address" required><br>
-            <button class="saveButton" type="submit">Save</button>
+            <input class="myInput" type="tel" id="phone" name="phone" placeholder="Phone Number" value="{{ user.phone }}" required><br>
+            <input class="myInput" type="email" id="email" name="email" placeholder="Email" value="{{ user.email }}" required><br>
+            <input class="myInput" type="password" id="password" name="password" placeholder="password" value="{{ user.password }}" required><br>
+            <input class="myInput" type="text" id="address" name="address" placeholder="Address" value="{{ user.address }}" required><br>
+            <input type="hidden" name="role" id="role" value="M">
+            <input type="hidden" id="id" name="id" value="{{ id }}">
+            {% if action and action == 'edit' %}
+                <button class="saveButton" type="button" onclick="setRole('A')">Edit</button>
+            {% elif admins == 0 %}
+                <button class="saveButton" type="button" onclick="setRole('A')">Save Admin</button>
+            {% elif admins == max_admins %}
+                <button class="saveButton" type="button" onclick="setRole('M')">Save Moderator</button>
+            {% else %}
+                <div style="margin-bottom: 1rem; width: 15rem; display: flex; flex-direction: row; justify-content: space-between;">
+                    <button class="saveButton" type="button" onclick="setRole('A')">Save Admin</button>
+                    <button class="saveButton" type="button" onclick="setRole('M')">Save Moderator</button>
+                </div>
+            {% endif %}
         </form>
+
+
+        <script>
+            function setRole(role) {
+                document.getElementById("role").value = role;
+                document.querySelector('form').submit();
+            }
+        </script>
+
     </body>
 </html>

@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <title>users</title>
+        <style>
+          body {
+            background-image: url("../../emotionDetector/images/back.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            }
+            table {
+              width: 90%;
+              margin: 3rem 2rem 2rem 2rem;
+              background-color: rgba(50, 100, 100, 0.7); 
+              border-radius: 5px;
+              box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+            }
+
+            td{
+                color: white;
+                height: 2rem;
+                font-size: 20px;
+                padding: 1rem 0 1rem 1rem;
+                text-align: left;
+                border-bottom: 1px solid #666;
+            }
+
+            th {
+              font-size: 20px;
+              height: 3.5rem;
+              background-color: rgba(0, 30, 30, 0.5);
+              color: white;
+              font-weight: bold;
+            }
+            .editBtn{
+                background-color: #ffa;
+                width: 5rem;
+                height: 2.5rem;
+                color: black;
+                font-size: 20px;
+                border: 1.5px solid #225;
+                border-radius: 5px;
+            }
+            .editBtn:hover{
+                cursor: pointer;
+                color: black;
+                background-color: white;
+            }
+        </style>
+    </head>
+    <body>
+        {% include 'navbar.html' %}
+        <table>
+          <tr>
+            <th>name</th>
+            <th>username</th>
+            <th>age</th>
+            <th>gender</th>
+            <th>phone</th>
+            <th>email</th>
+            <th>password</th>
+            <th>address</th>
+            <th>role</th>
+            <th></th>
+          </tr>
+          {% for user in users %}
+          <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.age }}</td>
+            {% if user.gender == 'M' %}
+              <td>Male</td>
+            {% else %}
+              <td>Female</td>
+            {% endif %}
+            <td>{{ user.phone }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.password }}</td>
+            <td>{{ user.address }}</td>
+            {% if user.role == 'M' %}
+              <td>Moderator</td>
+            {% else %}
+              <td>Admin</td>
+            {% endif %}
+            <td>
+              <button class="editBtn" onclick="location.href='/addModerator?action=edit&email={{user.email}}'">Edit</button>
+            </td>
+          </tr>
+          {%endfor%}
+          </table>
+    </body>
+</html>

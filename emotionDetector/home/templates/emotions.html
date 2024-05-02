@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <title>emotions</title>
+        <style>
+          body {
+            background-image: url("../../emotionDetector/images/back.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            }
+            table {
+              width: 80%;
+              margin: 3rem 2rem 2rem 2rem;
+              background-color: rgba(50, 100, 100, 0.7); 
+              border-radius: 5px;
+              box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+            }
+
+            td{
+                color: white;
+                height: 2rem;
+                font-size: 20px;
+                padding: 1rem 0 1rem 1rem;
+                text-align: left;
+                border-bottom: 1px solid #666;
+            }
+
+            th {
+              font-size: 20px;
+              height: 3.5rem;
+              background-color: rgba(0, 30, 30, 0.5);
+              color: white;
+              font-weight: bold;
+            }
+            .usersBtn{
+                background-color: #ffa;
+                width: 9rem;
+                height: 2.5rem;
+                color: black;
+                font-size: 20px;
+                border: 1.5px solid #225;
+                border-radius: 5px;
+            }
+            .usersBtn:hover{
+                cursor: pointer;
+                color: black;
+                background-color: white;
+            }
+        </style>
+    </head>
+    <body>
+        {% include 'navbar.html' %}
+        <table>
+          <tr>
+            <th>date</th>
+            <th>happy</th>
+            <th>sad</th>
+            <th>surprise</th>
+            <th>angry</th>
+            <th>fear</th>
+            <th>neutral</th>
+            <th>processed users</th>
+          </tr>
+          {% for emotion in emotions %}
+          <tr>
+            <td>{{ emotion.date }}</td>
+            <td>{{ emotion.happy }}</td>
+            <td>{{ emotion.sad }}</td>
+            <td>{{ emotion.surprise }}</td>
+            <td>{{ emotion.angry }}</td>
+            <td>{{ emotion.fear }}</td>
+            <td>{{ emotion.neutral }}</td>
+            <td>
+              <button class="usersBtn" onclick="location.href='/processed_users?date={{emotion.date}}'">show users</button>
+            </td>
+          </tr>
+          {%endfor%}
+          </table>
+    </body>
+</html>
